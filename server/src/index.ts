@@ -1,29 +1,29 @@
-import { Server, Room, Client } from "colyseus";
-import { createServer } from "http";
+import { Client, Room, Server } from "colyseus";
 import express from "express";
+import { createServer } from "http";
 
 const app: express.Application = express();
-const port = Number(process.env.PORT) || 3000;
+const port: number = Number(process.env.PORT) || 3000;
 
-const gameServer = new Server({
-    server: createServer(app)
+const gameServer: Server = new Server({
+  server: createServer(app),
 });
 
 class ChatRoom extends Room {
-    // maximum number of clients per active session
-    maxClients = 4;
+  // maximum number of clients per active session
+  maxClients = 4;
 
-    onInit() {
-        this.setState({ messages: [] });
-    }
-    onJoin(client: Client) {
-        this.state.messages.push(`${client.sessionId} joined.`);
-    }
-    onMessage(client: Client, data: any) {
-        this.state.messages.push(data);
-    }
+  onInit(): void {
+    this.setState({ messages: [] });
+  }
+  onJoin(client: Client): void {
+    this.state.messages.push(`${client.sessionId} joined.`);
+  }
+  onMessage(client: Client, data: any): void {
+    this.state.messages.push(data);
+  }
 }
 
-// Register ChatRoom as "chat"
+// register ChatRoom as "chat"
 gameServer.register("chat", ChatRoom);
 gameServer.listen(port);

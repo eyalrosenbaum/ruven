@@ -1,41 +1,27 @@
-import { Client, Room } from 'colyseus';
-import { Player, playerState } from './Models';
+import { Client, Room } from "colyseus";
+import { RoomState } from "./LobbyRoomState";
 
-export type PlayersMap = { [id: string]: Player };
+export abstract class LobbyRoom<T extends RoomState> extends Room<T> {
+  mode: string = "";
 
-export interface LobbyRoomState {
-  players: PlayersMap;
-}
-
-export abstract class LobbyRoom extends Room<LobbyRoomState> {
-  mode: string = '';
-
-  onInit(options: any) {
+  onInit(options: any): void {
     this.setState({
-      players: [],
+      players: {},
     });
   }
 
-  onJoin = (client: Client) => {
-    /*creating new player and adding them to players list*/
-    const newPlayer: Player = { id: client.sessionId, x: 0, y: 0, state: playerState.waiting };
-    this.state.players[newPlayer.id] = newPlayer;
-  };
+  abstract onJoin(client: Client): void;
 
-  onLeave = (client: Client) => {
+  onLeave(client: Client): void {
     /*remove player from players list*/
-    delete this.state.players[client.sessionId];
-  };
+    this.state.removePlayer(client.sessionId);
+  }
 
-  onMessage = (client: Client, data: any) => {
-    if (data.action === 'left') {
-      this.state.players[client.sessionId].x -= 1;
-    } else if (data.action === 'right') {
-      this.state.players[client.sessionId].x += 1;
-    }
-  };
+  onMessage(client: Client, data: any): void {
+    return;
+  }
 
-  onReady(client: Client) {
-    this.state.players[client.sessionId].state = playerState.ready;
+  onReady(client: Client): void {
+    this.state.readyPlayer(client.sessionId);
   }
 }
