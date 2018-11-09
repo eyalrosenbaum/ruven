@@ -1,10 +1,11 @@
+import { EntityMap } from "colyseus";
 import { defaultLobbyPlayer, defaultTeamLobbyPlayer, ILobbyPlayer, ITeamLobbyPlayer, PlayerState } from "./Models";
 import { ITeam } from "./TeamDeathMatchRoom";
 
 export type PlayersMap<T extends ILobbyPlayer> = { [id: string]: T };
 
 export abstract class LobbyRoomState<T extends ILobbyPlayer> {
-  players: PlayersMap<T> = {};
+  players: EntityMap<T> = {};
 
   abstract addPlayer(playerId: string, team?: ITeam): void;
 

@@ -12,10 +12,7 @@ export abstract class LobbyRoom<T extends RoomState> extends Room<T> {
 
   abstract onJoin(client: Client): void;
 
-  onLeave(client: Client): void {
-    /*remove player from players list*/
-    this.state.removePlayer(client.sessionId);
-  }
+  abstract onLeave(client: Client): void;
 
   onMessage(client: Client, data: any): void {
     return;

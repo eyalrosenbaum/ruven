@@ -8,4 +8,8 @@ export class DeathMatch extends LobbyRoom<DeathMatchRoomState> {
   onJoin(client: Client): void {
     this.state.addPlayer(client.sessionId);
   }
+
+  onLeave(client: Client): void {
+    this.state.removePlayer(client.sessionId);
+  }
 }
